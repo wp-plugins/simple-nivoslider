@@ -9,9 +9,10 @@
 					);
 
 	$args = array(
-				'numberposts' => 0,
 				'post_type' => 'any',
-				'post_status' => ''
+				'numberposts' => -1,
+				'post_status' => null,
+				'post_parent' => $post->ID
 			);
 	$allposts = get_posts($args);
 

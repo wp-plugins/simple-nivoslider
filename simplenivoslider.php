@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple NivoSlider
 Plugin URI: http://wordpress.org/plugins/simple-nivoslider/
-Version: 1.0
+Version: 1.1
 Description: Integrates NivoSlider into WordPress.
 Author: Katsushi Kawamori
 Author URI: http://gallerylink.nyanko.org/medialink/simple-nivoslider/
