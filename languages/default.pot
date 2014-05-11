@@ -68,3 +68,6 @@ msgstr ""
 
 msgid "Start on a random slide"
 msgstr ""
+
+msgid "Number of titles to show to this page"
+msgstr ""

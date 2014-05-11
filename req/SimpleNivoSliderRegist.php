@@ -27,6 +27,13 @@ class SimpleNivoSliderRegist {
 	 */
 	function register_settings(){
 
+		if ( !get_option('simplenivoslider_mgsettings') ) {
+			$mgsettings_tbl = array(
+								'pagemax' => 20
+							);
+			update_option( 'simplenivoslider_mgsettings', $mgsettings_tbl );
+		}
+
 		if ( !get_option('simplenivoslider_settings') ) {
 			$settings_tbl = array(
 								theme => 'default',

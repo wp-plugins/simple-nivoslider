@@ -73,3 +73,6 @@ msgstr "nextの代わりに表示したい文字を設定"
 
 msgid "Start on a random slide"
 msgstr "開始画像をランダムにするか否か（true/false）"
+
+msgid "Number of titles to show to this page"
+msgstr "このページへ表示数するタイトルの数"

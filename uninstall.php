@@ -5,6 +5,7 @@
 	    exit();
 
 	$option_names = array(
+						'simplenivoslider_mgsettings',
 						'simplenivoslider_settings'
 					);
 

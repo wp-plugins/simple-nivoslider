@@ -58,12 +58,18 @@ class SimpleNivoSliderAdmin {
 		wp_enqueue_style( 'jquery-ui-tabs', SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/css/jquery-ui.css' );
 		wp_enqueue_script( 'jquery-ui-tabs' );
 		wp_enqueue_script( 'jquery-ui-tabs-in', SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/js/jquery-ui-tabs-in.js' );
+		wp_enqueue_script( 'jquery-check-selectall-in', SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/js/jquery-check-selectall-in.js' );
 
-		if( !empty($_POST) ) { $this->options_updated(); }
+		if( !empty($_POST) ) { 
+			$this->options_updated();
+			$this->post_meta_updated();
+		}
 		$scriptname = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH).'?page=simplenivoslider';
 
 		$simplenivoslider_apply = get_option('simplenivoslider_apply');
 		$simplenivoslider_settings = get_option('simplenivoslider_settings');
+		$simplenivoslider_mgsettings = get_option('simplenivoslider_mgsettings');
+		$pagemax =$simplenivoslider_mgsettings[pagemax];
 
 		?>
 
@@ -72,26 +78,117 @@ class SimpleNivoSliderAdmin {
 
 	<div id="tabs">
 	  <ul>
-	    <li><a href="#tabs-1"><?php _e('How to use', 'simplenivoslider') ?></a></li>
+	    <li><a href="#tabs-1"><?php _e('Settings'); ?></a></li>
 		<li><a href="#tabs-2">Nivo Slider&nbsp<?php _e('Settings'); ?></a></li>
+		<li><a href="#tabs-3"><?php _e('Caution:'); ?></a></li>
 	<!--
-		<li><a href="#tabs-3">FAQ</a></li>
+		<li><a href="#tabs-4">FAQ</a></li>
 	 -->
 	  </ul>
 
+	<form method="post" action="<?php echo $scriptname; ?>">
+
 	  <div id="tabs-1">
 		<div class="wrap">
-			<h2><?php _e('How to use', 'simplenivoslider') ?></h2>
-			<li><h3><?php _e('Meta-box of Simple NivoSlider will be added to [Edit Post] and [Edit Page]. Please do apply it.', 'simplenivoslider'); ?></h3></li>
-			<img src = "<?php echo SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/png/apply.png'; ?>">
+		<h2><?php _e('Settings'); ?></h2>
+
+			<p class="submit">
+			  <input type="submit" name="Submit" value="<?php _e('Save Changes') ?>" />
+			</p>
+
+			<p>
+			<div><?php _e('Number of titles to show to this page', 'simplenivoslider'); ?>:<input type="text" name="simplenivoslider_mgsettings_pagemax" value="<?php echo $pagemax; ?>" size="3" /></div>
+
+			<?php
+			$args = array(
+				'post_type' => 'any',
+				'numberposts' => -1,
+				'orderby' => 'date',
+				'order' => 'DESC',
+				'post_status' => null,
+				'post_parent' => $post->ID
+				); 
+
+			$postpages = get_posts($args);
+
+			// pagenation
+			foreach ( $postpages as $postpage ) {
+				++$pageallcount;
+			}
+			if (!empty($_GET['p'])){
+				$page = $_GET['p'];
+			} else {
+				$page = 1;
+			}
+			$count = 0;
+			$pagebegin = (($page - 1) * $pagemax) + 1;
+			$pageend = $page * $pagemax;
+			$pagelast = ceil($pageallcount / $pagemax);
+
+			?>
+			<table class="wp-list-table widefat">
+			<tbody>
+				<tr><td colspan="3">
+				<td align="right">
+				<?php $this->pagenation($page, $pagebegin, $pageend, $pagelast, $scriptname);
+				?>
+				</td>
+				</tr>
+				<tr>
+				<td align="left" valign="middle"><?php _e('Title'); ?></td>
+				<td align="left" valign="middle"><?php _e('Type'); ?></td>
+				<td align="left" valign="middle"><?php _e('Date/Time'); ?></td>
+				<td align="left" valign="middle"><?php _e('Apply'); ?><div><input type="checkbox" id="group_simplenivoslider" class="checkAll"></div></td>
+				</tr>
+			<?php
+
+			if ($postpages) {
+				foreach ( $postpages as $postpage ) {
+					++$count;
+				    $apply = get_post_meta( $postpage->ID, 'simplenivoslider_apply', true );
+					if ( $pagebegin <= $count && $count <= $pageend ) {
+						$title = $postpage->post_title;
+						$link = $postpage->guid;
+						$posttype = $postpage->post_type;
+						$date = $postpage->post_date;
+					?>
+						<tr>
+							<td align="left" valign="middle"><a style="color: #4682b4;" title="<?php _e('View');?>" href="<?php echo $link; ?>" target="_blank"><?php echo $title; ?></a></td>
+							<td align="left" valign="middle"><?php echo $posttype; ?></td>
+							<td align="left" valign="middle"><?php echo $date; ?></td>
+							<td align="left" valign="middle">
+							    <input type="hidden" class="group_simplenivoslider" name="simplenivoslider_applys[<?php echo $postpage->ID; ?>]" value="false">
+							    <input type="checkbox" class="group_simplenivoslider" name="simplenivoslider_applys[<?php echo $postpage->ID; ?>]" value="true" <?php if ( $apply == true ) { echo 'checked'; }?>>
+							</td>
+						</tr>
+					<?php
+					} else {
+					?>
+					    <input type="hidden" name="simplenivoslider_applys[<?php echo $postpage->ID; ?>]" value="<?php echo $apply; ?>">
+					<?php
+					}
+				}
+			}
+			?>
+				<tr><td colspan="3">
+				<td align="right">
+				<?php $this->pagenation($page, $pagebegin, $pageend, $pagelast, $scriptname);
+				?>
+				</td>
+				</tr>
+			</tbody>
+			</table>
+
+			<p class="submit">
+			  <input type="submit" name="Submit" value="<?php _e('Save Changes') ?>" />
+			</p>
+
 		</div>
 	  </div>
 
 	  <div id="tabs-2">
 		<div class="wrap">
 			<h2>Nivo Slider&nbsp<?php _e('Settings'); ?>(<a href="http://docs.dev7studios.com/jquery-plugins/nivo-slider" target="_blank"><font color="red"><?php _e('Documentation'); ?></font></a>)</h2>	
-
-	<form method="post" action="<?php echo $scriptname; ?>">
 
 			<p class="submit">
 			  <input type="submit" name="Submit" value="<?php _e('Save Changes') ?>" />
@@ -277,8 +374,16 @@ class SimpleNivoSliderAdmin {
 		</div>
 	  </div>
 
-	<!--
 	  <div id="tabs-3">
+		<div class="wrap">
+			<h2><?php _e('Caution:'); ?></h2>
+			<li><h3><?php _e('Meta-box of Simple NivoSlider will be added to [Edit Post] and [Edit Page]. Please do apply it.', 'simplenivoslider'); ?></h3></li>
+			<img src = "<?php echo SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/png/apply.png'; ?>">
+		</div>
+	  </div>
+
+	<!--
+	  <div id="tabs-4">
 		<div class="wrap">
 		<h2>FAQ</h2>
 
@@ -294,11 +399,48 @@ class SimpleNivoSliderAdmin {
 	}
 
 	/* ==================================================
+	 * Pagenation
+	 * @since	1.0
+	 * string	$page
+	 * string	$pagebegin
+	 * string	$pageend
+	 * string	$pagelast
+	 * string	$scriptname
+	 * return	$html
+	 */
+	function pagenation($page, $pagebegin, $pageend, $pagelast, $scriptname){
+
+			$pageprev = $page - 1;
+			$pagenext = $page + 1;
+			?>
+<div class='tablenav-pages'>
+<span class='pagination-links'>
+<?php if ( $page <> 1 ){
+		?><a title='<?php _e('Go to the first page'); ?>' href='<?php echo $scriptname; ?>'>&laquo;</a>
+		<a title='<?php _e('Go to the previous page'); ?>' href='<?php echo $scriptname.'&p='.$pageprev ; ?>'>&lsaquo;</a>
+<?php }	?>
+<?php echo $page; ?> / <?php echo $pagelast; ?>
+<?php if ( $page <> $pagelast ){
+		?><a title='<?php _e('Go to the next page'); ?>' href='<?php echo $scriptname.'&p='.$pagenext ; ?>'>&rsaquo;</a>
+		<a title='<?php _e('Go to the last page'); ?>' href='<?php echo $scriptname.'&p='.$pagelast; ?>'>&raquo;</a>
+<?php }	?>
+</span>
+</div>
+			<?php
+
+	}
+
+	/* ==================================================
 	 * Update wp_options table.
 	 * @since	1.0
 	 */
 	function options_updated(){
 
+		$mgsettings_tbl = array(
+						'pagemax' => intval($_POST['simplenivoslider_mgsettings_pagemax'])
+						);
+		update_option( 'simplenivoslider_mgsettings', $mgsettings_tbl );
+				
 		$settings_tbl = array(
 						'theme' => $_POST['simplenivoslider_settings_theme'],
 						'effect' => $_POST['simplenivoslider_settings_effect'],
@@ -319,6 +461,24 @@ class SimpleNivoSliderAdmin {
 						'randomStart' => $_POST['simplenivoslider_settings_randomStart']
 						);
 		update_option( 'simplenivoslider_settings', $settings_tbl );
+
+	}
+
+	/* ==================================================
+	 * Update wp_postmeta table for admin settings.
+	 * @since	1.0
+	 */
+	function post_meta_updated() {
+
+		$simplenivoslider_applys = $_POST['simplenivoslider_applys'];
+
+		foreach ( $simplenivoslider_applys as $key => $value ) {
+			if ( $value === 'true' ) {
+		    	update_post_meta( $key, 'simplenivoslider_apply', $value );
+			} else {
+				delete_post_meta( $key, 'simplenivoslider_apply' );
+			}
+		}
 
 	}
 
