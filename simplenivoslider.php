@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple NivoSlider
 Plugin URI: http://wordpress.org/plugins/simple-nivoslider/
-Version: 1.2
+Version: 1.3
 Description: Integrates NivoSlider into WordPress.
 Author: Katsushi Kawamori
 Author URI: http://gallerylink.nyanko.org/medialink/simple-nivoslider/
@@ -58,7 +58,13 @@ Domain Path: /languages
 	add_shortcode('gallery', array($simplenivoslider, 'simplenivoslider_gallery_shortcode'), 12 );
 	add_filter( 'wp_get_attachment_image_attributes', array($simplenivoslider, 'add_title_to_attachment_image'), 13, 2 );
 	add_filter( 'the_content', array($simplenivoslider, 'add_img_tag'), 14 );
-	add_action( 'wp_footer', array($simplenivoslider, 'add_footer'), 15 );
+
+	// for GalleryLink http://wordpress.org/plugins/gallerylink/
+	add_filter( 'post_gallerylink', array($simplenivoslider, 'add_img_tag'), 15 );
+	// for MediaLink http://wordpress.org/plugins/medialink/
+	add_filter( 'post_medialink', array($simplenivoslider, 'add_img_tag'), 16 );
+
+	add_action( 'wp_footer', array($simplenivoslider, 'add_footer'), 17 );
 
 	unset($simplenivoslider);
 
