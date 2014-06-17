@@ -522,14 +522,13 @@ class SimpleNivoSliderAdmin {
 	 */
 	function save_apply_simplenivoslider_postdata( $post_id ) {
 
-		$mydata = $_POST['simplenivoslider_apply'];
-		if ( "" == get_post_meta( $post_id, 'simplenivoslider_apply' )) {
-			add_post_meta( $post_id, 'simplenivoslider_apply', $mydata, true );
-		} else if ( $mydata != get_post_meta( $post_id, 'simplenivoslider_apply' )) {
-			update_post_meta( $post_id, 'simplenivoslider_apply', $mydata );
-		} else if ( "" == $mydata ) {
+		$dataapply = $_POST['simplenivoslider_apply'];
+		if ( $dataapply === 'true' ) {
+			add_post_meta( $post_id, 'simplenivoslider_apply', $dataapply, true );
+		} else if ( $dataapply === ''  || $dataapply === 'false' ) {
 			delete_post_meta( $post_id, 'simplenivoslider_apply' );
 		}
+
 	}
 
 	/* ==================================================

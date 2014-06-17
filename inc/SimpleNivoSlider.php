@@ -30,50 +30,54 @@ class SimpleNivoSlider {
 	*/
 	function add_img_tag($link) {
 
-		$simplenivoslider_apply = get_post_meta( get_the_ID(), 'simplenivoslider_apply' );
-		$settings_tbl = get_option('simplenivoslider_settings');
+		if ( get_post_gallery( get_the_ID() ) ) {
+			return $link;
+		} else {
+			$simplenivoslider_apply = get_post_meta( get_the_ID(), 'simplenivoslider_apply' );
+			$settings_tbl = get_option('simplenivoslider_settings');
 
-		if ($simplenivoslider_apply[0] === 'true'){
+			if ($simplenivoslider_apply[0] === 'true'){
 
-			$args = array(
-				'post_type' => 'attachment',
-				'post_mime_type' => 'image',
-				'numberposts' => -1,
-				'post_status' => null,
-				'post_parent' => $post->ID
-				);
-			$attachments = get_posts($args);
+				$args = array(
+					'post_type' => 'attachment',
+					'post_mime_type' => 'image',
+					'numberposts' => -1,
+					'post_status' => null,
+					'post_parent' => $post->ID
+					);
+				$attachments = get_posts($args);
 
-			if(preg_match_all("/<img(.+?)>/i", $link, $result) !== false){
-		    	foreach ($result[1] as $value){
-					preg_match('/src=\"(.[^\"]*)\"/',$value,$src);
-					$explode = explode("/" , $src[1]);
-					$file_name = $explode[count($explode) - 1];
-					$title_name = preg_replace("/(.+)(\.[^.]+$)/", "$1", $file_name);
-					$title_name = preg_replace('(-[0-9]*x[0-9]*)', '', $title_name);
-					$image_thumb = NULL;
-					foreach ( $attachments as $attachment ) {
-						if( strpos($attachment->guid, $title_name) ){
-							$title_name = $attachment->post_title;
-							$image_thumb = wp_get_attachment_image_src( $attachment->ID, 'thumbnail', false );
+				if(preg_match_all("/<img(.+?)>/i", $link, $result) !== false){
+			    	foreach ($result[1] as $value){
+						preg_match('/src=\"(.[^\"]*)\"/',$value,$src);
+						$explode = explode("/" , $src[1]);
+						$file_name = $explode[count($explode) - 1];
+						$title_name = preg_replace("/(.+)(\.[^.]+$)/", "$1", $file_name);
+						$title_name = preg_replace('(-[0-9]*x[0-9]*)', '', $title_name);
+						$image_thumb = NULL;
+						foreach ( $attachments as $attachment ) {
+							if( strpos($attachment->guid, $title_name) ){
+								$title_name = $attachment->post_title;
+								$image_thumb = wp_get_attachment_image_src( $attachment->ID, 'thumbnail', false );
+							}
+						}
+						if( !strpos($value, 'title=') ) {
+							$title_name = ' title="'.$title_name.'" ';
+							$link = str_replace($value, $title_name.$value, $link);
+						}
+						if( !strpos($value, 'data-thumb=') && $settings_tbl[controlNavThumbs] === 'true' ) {
+							$thumb_data = ' data-thumb="'.$image_thumb[0].'" ';
+							$link = str_replace($value, $thumb_data.$value, $link);
 						}
 					}
-					if( !strpos($value, 'title=') ) {
-						$title_name = ' title="'.$title_name.'" ';
-						$link = str_replace($value, $title_name.$value, $link);
-					}
-					if( !strpos($value, 'data-thumb=') && $settings_tbl[controlNavThumbs] === 'true' ) {
-						$thumb_data = ' data-thumb="'.$image_thumb[0].'" ';
-						$link = str_replace($value, $thumb_data.$value, $link);
-					}
 				}
+				$link = strip_tags( $link, '<img>');
+				$settings_tbl = get_option('simplenivoslider_settings');
+				$link = '<div class="slider-wrapper theme-'.$settings_tbl[theme].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$link.'</div></div>';
+				$this->footerjs .= $this->add_js();
 			}
-			$link = strip_tags( $link, '<img>');
-			$settings_tbl = get_option('simplenivoslider_settings');
-			$link = '<div class="slider-wrapper theme-'.$settings_tbl[theme].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$link.'</div></div>';
-			$this->footerjs .= $this->add_js();
+			return $link;
 		}
-		return $link;
 
 	}
 
@@ -410,7 +414,10 @@ SIMPLENIVOSLIDER2;
 			}
 		}
 
-		if ($simplenivoslider_apply[0] <> 'true'){
+		if ($simplenivoslider_apply[0] === 'true'){
+			$output = '<div class="slider-wrapper theme-'.$settings_tbl[theme].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$output.'</div></div>';
+			$this->footerjs .= $this->add_js();
+		} else {
 			if ( ! $html5 && $columns > 0 && $i % $columns !== 0 ) {
 				$output .= "
 					<br style='clear: both' />";
