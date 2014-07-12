@@ -36,45 +36,45 @@ class SimpleNivoSlider {
 			$simplenivoslider_apply = get_post_meta( get_the_ID(), 'simplenivoslider_apply' );
 			$settings_tbl = get_option('simplenivoslider_settings');
 
-			if ($simplenivoslider_apply[0] === 'true'){
+			if ( !empty($simplenivoslider_apply) ) {
+				if ($simplenivoslider_apply[0] === 'true'){
 
-				$args = array(
-					'post_type' => 'attachment',
-					'post_mime_type' => 'image',
-					'numberposts' => -1,
-					'post_status' => null,
-					'post_parent' => $post->ID
-					);
-				$attachments = get_posts($args);
+					$args = array(
+						'post_type' => 'attachment',
+						'post_mime_type' => 'image',
+						'numberposts' => -1
+						);
+					$attachments = get_posts($args);
 
-				if(preg_match_all("/<img(.+?)>/i", $link, $result) !== false){
-			    	foreach ($result[1] as $value){
-						preg_match('/src=\"(.[^\"]*)\"/',$value,$src);
-						$explode = explode("/" , $src[1]);
-						$file_name = $explode[count($explode) - 1];
-						$title_name = preg_replace("/(.+)(\.[^.]+$)/", "$1", $file_name);
-						$title_name = preg_replace('(-[0-9]*x[0-9]*)', '', $title_name);
-						$image_thumb = NULL;
-						foreach ( $attachments as $attachment ) {
-							if( strpos($attachment->guid, $title_name) ){
-								$title_name = $attachment->post_title;
-								$image_thumb = wp_get_attachment_image_src( $attachment->ID, 'thumbnail', false );
+					if(preg_match_all("/<img(.+?)>/i", $link, $result) !== false){
+				    	foreach ($result[1] as $value){
+							preg_match('/src=\"(.[^\"]*)\"/',$value,$src);
+							$explode = explode("/" , $src[1]);
+							$file_name = $explode[count($explode) - 1];
+							$title_name = preg_replace("/(.+)(\.[^.]+$)/", "$1", $file_name);
+							$title_name = preg_replace('(-[0-9]*x[0-9]*)', '', $title_name);
+							$image_thumb = NULL;
+							foreach ( $attachments as $attachment ) {
+								if( strpos($attachment->guid, $title_name) ){
+									$title_name = $attachment->post_title;
+									$image_thumb = wp_get_attachment_image_src( $attachment->ID, 'thumbnail', false );
+								}
+							}
+							if( !strpos($value, 'title=') ) {
+								$title_name = ' title="'.$title_name.'" ';
+								$link = str_replace($value, $title_name.$value, $link);
+							}
+							if( !strpos($value, 'data-thumb=') && $settings_tbl['controlNavThumbs'] === 'true' ) {
+								$thumb_data = ' data-thumb="'.$image_thumb[0].'" ';
+								$link = str_replace($value, $thumb_data.$value, $link);
 							}
 						}
-						if( !strpos($value, 'title=') ) {
-							$title_name = ' title="'.$title_name.'" ';
-							$link = str_replace($value, $title_name.$value, $link);
-						}
-						if( !strpos($value, 'data-thumb=') && $settings_tbl[controlNavThumbs] === 'true' ) {
-							$thumb_data = ' data-thumb="'.$image_thumb[0].'" ';
-							$link = str_replace($value, $thumb_data.$value, $link);
-						}
 					}
+					$link = strip_tags( $link, '<img>');
+					$settings_tbl = get_option('simplenivoslider_settings');
+					$link = '<div class="slider-wrapper theme-'.$settings_tbl['theme'].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$link.'</div></div>';
+					$this->footerjs .= $this->add_js();
 				}
-				$link = strip_tags( $link, '<img>');
-				$settings_tbl = get_option('simplenivoslider_settings');
-				$link = '<div class="slider-wrapper theme-'.$settings_tbl[theme].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$link.'</div></div>';
-				$this->footerjs .= $this->add_js();
 			}
 			return $link;
 		}
@@ -109,6 +109,7 @@ class SimpleNivoSlider {
 
 		wp_enqueue_style( 'nivo-slider-themes',  SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/nivo-slider/themes/'.$theme.'/'.$theme.'.css' );
 		wp_enqueue_style( 'nivo-slider',  SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/nivo-slider/nivo-slider.css' );
+		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'nivo-slider', SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/nivo-slider/jquery.nivo.slider.pack.js', null, '3.2');
 
 	// CSS
@@ -245,20 +246,22 @@ SIMPLENIVOSLIDER2;
 
 		$html5 = current_theme_supports( 'html5', 'gallery' );
 
-		if ($simplenivoslider_apply[0] === 'true'){
-			extract(shortcode_atts(array(
-				'order'      => 'ASC',
-				'orderby'    => 'menu_order ID',
-				'id'         => $post ? $post->ID : 0,
-				'itemtag'    => $html5 ? 'figure'     : 'dl',
-				'icontag'    => $html5 ? 'div'        : 'dt',
-				'captiontag' => $html5 ? 'figcaption' : 'dd',
-				'columns'    => 3,
-				'size'       => 'full',
-				'include'    => '',
-				'exclude'    => '',
-				'link'       => 'none'
-			), $attr, 'gallery'));
+		if ( !empty($simplenivoslider_apply) ){
+			if ($simplenivoslider_apply[0] === 'true'){
+				extract(shortcode_atts(array(
+					'order'      => 'ASC',
+					'orderby'    => 'menu_order ID',
+					'id'         => $post ? $post->ID : 0,
+					'itemtag'    => $html5 ? 'figure'     : 'dl',
+					'icontag'    => $html5 ? 'div'        : 'dt',
+					'captiontag' => $html5 ? 'figcaption' : 'dd',
+					'columns'    => 3,
+					'size'       => 'full',
+					'include'    => '',
+					'exclude'    => '',
+					'link'       => 'none'
+				), $attr, 'gallery'));
+			}
 		} else {
 			extract(shortcode_atts(array(
 				'order'      => 'ASC',
@@ -330,30 +333,32 @@ SIMPLENIVOSLIDER2;
 		 *                    Defaults to false if the theme supports HTML5 galleries.
 		 *                    Otherwise, defaults to true.
 		 */
-		if ($simplenivoslider_apply[0] <> 'true'){
-			if ( apply_filters( 'use_default_gallery_style', ! $html5 ) ) {
-				$gallery_style = "
-				<style type='text/css'>
-					#{$selector} {
-						margin: auto;
-					}
-					#{$selector} .gallery-item {
-						float: {$float};
-						margin-top: 10px;
-						text-align: center;
-						width: {$itemwidth}%;
-					}
-					#{$selector} img {
-						border: 2px solid #cfcfcf;
-					}
-					#{$selector} .gallery-caption {
-						margin-left: 0;
-					}
-					/* see gallery_shortcode() in wp-includes/media.php */
-				</style>\n\t\t";
+		if ( !empty($simplenivoslider_apply) ){
+			if ($simplenivoslider_apply[0] <> 'true'){
+				if ( apply_filters( 'use_default_gallery_style', ! $html5 ) ) {
+					$gallery_style = "
+					<style type='text/css'>
+						#{$selector} {
+							margin: auto;
+						}
+						#{$selector} .gallery-item {
+							float: {$float};
+							margin-top: 10px;
+							text-align: center;
+							width: {$itemwidth}%;
+						}
+						#{$selector} img {
+							border: 2px solid #cfcfcf;
+						}
+						#{$selector} .gallery-caption {
+							margin-left: 0;
+						}
+						/* see gallery_shortcode() in wp-includes/media.php */
+					</style>\n\t\t";
+				}
+				$size_class = sanitize_html_class( $size );
+				$gallery_div = "<div id='$selector' class='gallery galleryid-{$id} gallery-columns-{$columns} gallery-size-{$size_class}'>";
 			}
-			$size_class = sanitize_html_class( $size );
-			$gallery_div = "<div id='$selector' class='gallery galleryid-{$id} gallery-columns-{$columns} gallery-size-{$size_class}'>";
 		}
 
 		/**
@@ -381,20 +386,22 @@ SIMPLENIVOSLIDER2;
 			if ( isset( $image_meta['height'], $image_meta['width'] ) )
 				$orientation = ( $image_meta['height'] > $image_meta['width'] ) ? 'portrait' : 'landscape';
 
-			if ($simplenivoslider_apply[0] === 'true'){
-				$settings_tbl = get_option('simplenivoslider_settings');
-				if ($settings_tbl[controlNavThumbs] === 'true'){
-					$image_thumb = wp_get_attachment_image_src( $id, 'thumbnail', false );
-					if(preg_match_all("/<img(.+?)>/i", $image_output, $result) !== false){
-				    	foreach ($result[1] as $value){
-							if( !strpos($value, 'data-thumb=') ) {
-								$thumb_data = ' data-thumb="'.$image_thumb[0].'" ';
-								$image_output = str_replace($value, $thumb_data.$value, $image_output);
+			if ( !empty($simplenivoslider_apply) ){
+				if ($simplenivoslider_apply[0] === 'true'){
+					$settings_tbl = get_option('simplenivoslider_settings');
+					if ($settings_tbl['controlNavThumbs'] === 'true'){
+						$image_thumb = wp_get_attachment_image_src( $id, 'thumbnail', false );
+						if(preg_match_all("/<img(.+?)>/i", $image_output, $result) !== false){
+					    	foreach ($result[1] as $value){
+								if( !strpos($value, 'data-thumb=') ) {
+									$thumb_data = ' data-thumb="'.$image_thumb[0].'" ';
+									$image_output = str_replace($value, $thumb_data.$value, $image_output);
+								}
 							}
 						}
 					}
+					$output .= $image_output;
 				}
-				$output .= $image_output;
 			} else {
 				$output .= "<{$itemtag} class='gallery-item'>";
 				$output .= "
@@ -414,9 +421,11 @@ SIMPLENIVOSLIDER2;
 			}
 		}
 
-		if ($simplenivoslider_apply[0] === 'true'){
-			$output = '<div class="slider-wrapper theme-'.$settings_tbl[theme].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$output.'</div></div>';
-			$this->footerjs .= $this->add_js();
+		if ( !empty($simplenivoslider_apply) ){
+			if ($simplenivoslider_apply[0] === 'true'){
+				$output = '<div class="slider-wrapper theme-'.$settings_tbl['theme'].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$output.'</div></div>';
+				$this->footerjs .= $this->add_js();
+			}
 		} else {
 			if ( ! $html5 && $columns > 0 && $i % $columns !== 0 ) {
 				$output .= "

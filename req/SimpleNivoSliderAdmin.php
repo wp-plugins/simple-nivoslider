@@ -56,6 +56,7 @@ class SimpleNivoSliderAdmin {
 		}
 
 		wp_enqueue_style( 'jquery-ui-tabs', SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/css/jquery-ui.css' );
+		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'jquery-ui-tabs' );
 		wp_enqueue_script( 'jquery-ui-tabs-in', SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/js/jquery-ui-tabs-in.js' );
 		wp_enqueue_script( 'jquery-check-selectall-in', SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/js/jquery-check-selectall-in.js' );
@@ -69,7 +70,7 @@ class SimpleNivoSliderAdmin {
 		$simplenivoslider_apply = get_option('simplenivoslider_apply');
 		$simplenivoslider_settings = get_option('simplenivoslider_settings');
 		$simplenivoslider_mgsettings = get_option('simplenivoslider_mgsettings');
-		$pagemax =$simplenivoslider_mgsettings[pagemax];
+		$pagemax =$simplenivoslider_mgsettings['pagemax'];
 
 		?>
 
@@ -104,14 +105,13 @@ class SimpleNivoSliderAdmin {
 				'post_type' => 'any',
 				'numberposts' => -1,
 				'orderby' => 'date',
-				'order' => 'DESC',
-				'post_status' => null,
-				'post_parent' => $post->ID
+				'order' => 'DESC'
 				); 
 
 			$postpages = get_posts($args);
 
 			// pagenation
+			$pageallcount = 0;
 			foreach ( $postpages as $postpage ) {
 				++$pageallcount;
 			}
@@ -200,7 +200,7 @@ class SimpleNivoSliderAdmin {
 				<tr>
 					<td align="right" valign="middle">theme</td>
 					<td align="left" valign="middle">
-					<?php $target_settings_theme = $simplenivoslider_settings[theme]; ?>
+					<?php $target_settings_theme = $simplenivoslider_settings['theme']; ?>
 					<select id="simplenivoslider_settings_theme" name="simplenivoslider_settings_theme">
 						<option <?php if ('default' == $target_settings_theme)echo 'selected="selected"'; ?>>default</option>
 						<option <?php if ('dark' == $target_settings_theme)echo 'selected="selected"'; ?>>dark</option>
@@ -213,7 +213,7 @@ class SimpleNivoSliderAdmin {
 				<tr>
 					<td align="right" valign="middle">effect</td>
 					<td align="left" valign="middle">
-					<?php $target_settings_effect = $simplenivoslider_settings[effect]; ?>
+					<?php $target_settings_effect = $simplenivoslider_settings['effect']; ?>
 					<select id="simplenivoslider_settings_effect" name="simplenivoslider_settings_effect">
 						<option <?php if ('sliceDown' == $target_settings_effect)echo 'selected="selected"'; ?>>sliceDown</option>
 						<option <?php if ('sliceDownLeft' == $target_settings_effect)echo 'selected="selected"'; ?>>sliceDownLeft</option>
@@ -238,49 +238,49 @@ class SimpleNivoSliderAdmin {
 				<tr>
 					<td align="right" valign="middle">slices</td>
 					<td align="left" valign="middle">
-						<input type="text" id="simplenivoslider_settings_slices" name="simplenivoslider_settings_slices" value="<?php echo $simplenivoslider_settings[slices] ?>" style="width: 80px" />
+						<input type="text" id="simplenivoslider_settings_slices" name="simplenivoslider_settings_slices" value="<?php echo $simplenivoslider_settings['slices'] ?>" style="width: 80px" />
 					</td>
 					<td align="left" valign="middle"><li><?php _e('For slice animations', 'simplenivoslider'); ?></li></td>
 				</tr>
 				<tr>
 					<td align="right" valign="middle">boxCols</td>
 					<td align="left" valign="middle">
-						<input type="text" id="simplenivoslider_settings_boxCols" name="simplenivoslider_settings_boxCols" value="<?php echo $simplenivoslider_settings[boxCols] ?>" style="width: 80px" />
+						<input type="text" id="simplenivoslider_settings_boxCols" name="simplenivoslider_settings_boxCols" value="<?php echo $simplenivoslider_settings['boxCols'] ?>" style="width: 80px" />
 					</td>
 					<td align="left" valign="middle"><li><?php _e('For box animations cols', 'simplenivoslider'); ?></li></td>
 				</tr>
 				<tr>
 					<td align="right" valign="middle">boxRows</td>
 					<td align="left" valign="middle">
-						<input type="text" id="simplenivoslider_settings_boxRows" name="simplenivoslider_settings_boxRows" value="<?php echo $simplenivoslider_settings[boxRows] ?>" style="width: 80px" />
+						<input type="text" id="simplenivoslider_settings_boxRows" name="simplenivoslider_settings_boxRows" value="<?php echo $simplenivoslider_settings['boxRows'] ?>" style="width: 80px" />
 					</td>
 					<td align="left" valign="middle"><li><?php _e('For box animations rows', 'simplenivoslider'); ?></li></td>
 				</tr>
 				<tr>
 					<td align="right" valign="middle">animSpeed</td>
 					<td align="left" valign="middle">
-						<input type="text" id="simplenivoslider_settings_animSpeed" name="simplenivoslider_settings_animSpeed" value="<?php echo $simplenivoslider_settings[animSpeed] ?>" style="width: 80px" />msec
+						<input type="text" id="simplenivoslider_settings_animSpeed" name="simplenivoslider_settings_animSpeed" value="<?php echo $simplenivoslider_settings['animSpeed'] ?>" style="width: 80px" />msec
 					</td>
 					<td align="left" valign="middle"><li><?php _e('Slide transition speed', 'simplenivoslider'); ?></li></td>
 				</tr>
 				<tr>
 					<td align="right" valign="middle">pauseTime</td>
 					<td align="left" valign="middle">
-						<input type="text" id="simplenivoslider_settings_pauseTime" name="simplenivoslider_settings_pauseTime" value="<?php echo $simplenivoslider_settings[pauseTime] ?>" style="width: 80px" />msec
+						<input type="text" id="simplenivoslider_settings_pauseTime" name="simplenivoslider_settings_pauseTime" value="<?php echo $simplenivoslider_settings['pauseTime'] ?>" style="width: 80px" />msec
 					</td>
 					<td align="left" valign="middle"><li><?php _e('How long each slide will show', 'simplenivoslider'); ?></li></td>
 				</tr>
 				<tr>
 					<td align="right" valign="middle">startSlide</td>
 					<td align="left" valign="middle">
-						<input type="text" id="simplenivoslider_settings_startSlide" name="simplenivoslider_settings_startSlide" value="<?php echo $simplenivoslider_settings[startSlide] ?>" style="width: 80px" />
+						<input type="text" id="simplenivoslider_settings_startSlide" name="simplenivoslider_settings_startSlide" value="<?php echo $simplenivoslider_settings['startSlide'] ?>" style="width: 80px" />
 					</td>
 					<td align="left" valign="middle"><li><?php _e('Set starting Slide (0 index)', 'simplenivoslider'); ?></li></td>
 				</tr>
 				<tr>
 					<td align="right" valign="middle">directionNav</td>
 					<td align="left" valign="middle">
-					<?php $target_settings_directionNav = $simplenivoslider_settings[directionNav]; ?>
+					<?php $target_settings_directionNav = $simplenivoslider_settings['directionNav']; ?>
 					<select id="simplenivoslider_settings_directionNav" name="simplenivoslider_settings_directionNav">
 						<option <?php if ('true' == $target_settings_directionNav)echo 'selected="selected"'; ?>>true</option>
 						<option <?php if ('false' == $target_settings_directionNav)echo 'selected="selected"'; ?>>false</option>
@@ -291,7 +291,7 @@ class SimpleNivoSliderAdmin {
 				<tr>
 					<td align="right" valign="middle">controlNav</td>
 					<td align="left" valign="middle">
-					<?php $target_settings_controlNav = $simplenivoslider_settings[controlNav]; ?>
+					<?php $target_settings_controlNav = $simplenivoslider_settings['controlNav']; ?>
 					<select id="simplenivoslider_settings_controlNav" name="simplenivoslider_settings_controlNav">
 						<option <?php if ('true' == $target_settings_controlNav)echo 'selected="selected"'; ?>>true</option>
 						<option <?php if ('false' == $target_settings_controlNav)echo 'selected="selected"'; ?>>false</option>
@@ -302,7 +302,7 @@ class SimpleNivoSliderAdmin {
 				<tr>
 					<td align="right" valign="middle">controlNavThumbs</td>
 					<td align="left" valign="middle">
-					<?php $target_settings_controlNavThumbs = $simplenivoslider_settings[controlNavThumbs]; ?>
+					<?php $target_settings_controlNavThumbs = $simplenivoslider_settings['controlNavThumbs']; ?>
 					<select id="simplenivoslider_settings_controlNavThumbs" name="simplenivoslider_settings_controlNavThumbs">
 						<option <?php if ('true' == $target_settings_controlNavThumbs)echo 'selected="selected"'; ?>>true</option>
 						<option <?php if ('false' == $target_settings_controlNavThumbs)echo 'selected="selected"'; ?>>false</option>
@@ -313,14 +313,14 @@ class SimpleNivoSliderAdmin {
 				<tr>
 					<td align="right" valign="middle">thumbswidth</td>
 					<td align="left" valign="middle">
-						<input type="text" id="simplenivoslider_settings_thumbswidth" name="simplenivoslider_settings_thumbswidth" value="<?php echo $simplenivoslider_settings[thumbswidth] ?>" style="width: 80px" />px
+						<input type="text" id="simplenivoslider_settings_thumbswidth" name="simplenivoslider_settings_thumbswidth" value="<?php echo $simplenivoslider_settings['thumbswidth'] ?>" style="width: 80px" />px
 					</td>
 					<td align="left" valign="middle"><li><?php _e('Width of thumbnails', 'simplenivoslider'); ?></li></td>
 				</tr>
 				<tr>
 					<td align="right" valign="middle">pauseOnHover</td>
 					<td align="left" valign="middle">
-					<?php $target_settings_pauseOnHover = $simplenivoslider_settings[pauseOnHover]; ?>
+					<?php $target_settings_pauseOnHover = $simplenivoslider_settings['pauseOnHover']; ?>
 					<select id="simplenivoslider_settings_pauseOnHover" name="simplenivoslider_settings_pauseOnHover">
 						<option <?php if ('true' == $target_settings_pauseOnHover)echo 'selected="selected"'; ?>>true</option>
 						<option <?php if ('false' == $target_settings_pauseOnHover)echo 'selected="selected"'; ?>>false</option>
@@ -331,7 +331,7 @@ class SimpleNivoSliderAdmin {
 				<tr>
 					<td align="right" valign="middle">manualAdvance</td>
 					<td align="left" valign="middle">
-					<?php $target_settings_manualAdvance = $simplenivoslider_settings[manualAdvance]; ?>
+					<?php $target_settings_manualAdvance = $simplenivoslider_settings['manualAdvance']; ?>
 					<select id="simplenivoslider_settings_manualAdvance" name="simplenivoslider_settings_manualAdvance">
 						<option <?php if ('true' == $target_settings_manualAdvance)echo 'selected="selected"'; ?>>true</option>
 						<option <?php if ('false' == $target_settings_manualAdvance)echo 'selected="selected"'; ?>>false</option>
@@ -342,21 +342,21 @@ class SimpleNivoSliderAdmin {
 				<tr>
 					<td align="right" valign="middle">prevText</td>
 					<td align="left" valign="middle">
-						<input type="text" id="simplenivoslider_settings_prevText" name="simplenivoslider_settings_prevText" value="<?php echo $simplenivoslider_settings[prevText] ?>" />
+						<input type="text" id="simplenivoslider_settings_prevText" name="simplenivoslider_settings_prevText" value="<?php echo $simplenivoslider_settings['prevText'] ?>" />
 					</td>
 					<td align="left" valign="middle"><li><?php _e('Prev directionNav text', 'simplenivoslider'); ?></li></td>
 				</tr>
 				<tr>
 					<td align="right" valign="middle">nextText</td>
 					<td align="left" valign="middle">
-						<input type="text" id="simplenivoslider_settings_nextText" name="simplenivoslider_settings_nextText" value="<?php echo $simplenivoslider_settings[nextText] ?>" />
+						<input type="text" id="simplenivoslider_settings_nextText" name="simplenivoslider_settings_nextText" value="<?php echo $simplenivoslider_settings['nextText'] ?>" />
 					</td>
 					<td align="left" valign="middle"><li><?php _e('Next directionNav text', 'simplenivoslider'); ?></li></td>
 				</tr>
 				<tr>
 					<td align="right" valign="middle">randomStart</td>
 					<td align="left" valign="middle">
-					<?php $target_settings_randomStart = $simplenivoslider_settings[randomStart]; ?>
+					<?php $target_settings_randomStart = $simplenivoslider_settings['randomStart']; ?>
 					<select id="simplenivoslider_settings_randomStart" name="simplenivoslider_settings_randomStart">
 						<option <?php if ('true' == $target_settings_randomStart)echo 'selected="selected"'; ?>>true</option>
 						<option <?php if ('false' == $target_settings_randomStart)echo 'selected="selected"'; ?>>false</option>
