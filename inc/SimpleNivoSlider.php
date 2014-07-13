@@ -104,8 +104,8 @@ class SimpleNivoSlider {
 		echo $this->footerjs;
 
 		$settings_tbl = get_option('simplenivoslider_settings');
-		$theme = $settings_tbl[theme];
-		$thumbswidth = $settings_tbl[thumbswidth];
+		$theme = $settings_tbl['theme'];
+		$thumbswidth = $settings_tbl['thumbswidth'];
 
 		wp_enqueue_style( 'nivo-slider-themes',  SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/nivo-slider/themes/'.$theme.'/'.$theme.'.css' );
 		wp_enqueue_style( 'nivo-slider',  SIMPLENIVOSLIDER_PLUGIN_URL.'/simple-nivoslider/nivo-slider/nivo-slider.css' );

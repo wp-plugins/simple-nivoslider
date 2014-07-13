@@ -4,7 +4,7 @@ Donate link: http://gallerylink.nyanko.org/medialink/simple-nivoslider/
 Tags: slider, nivoslider, jquery, gallery, image, images, photo, photos, picture, pictures
 Requires at least: 3.0.1
 Tested up to: 3.4
-Stable tag: 1.5
+Stable tag: 1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,6 +40,9 @@ none
 
 == Changelog ==
 
+= 1.6 =
+Fixed of problem of error in debug mode.
+
 = 1.5 =
 Fixed of problem of error in debug mode.
 
@@ -62,6 +65,7 @@ Fixed uninstall.
 
 == Upgrade Notice ==
 
+= 1.6 =
 = 1.5 =
 = 1.4 =
 = 1.3 =

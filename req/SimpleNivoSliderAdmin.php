@@ -505,8 +505,17 @@ class SimpleNivoSliderAdmin {
 			<tr>
 				<td>
 					<div>
-						<input type="radio" name="simplenivoslider_apply" value="true" <?php if ($simplenivoslider_apply[0] === 'true') echo 'checked'; ?>><?php _e('Apply'); ?>&nbsp;&nbsp;
-						<input type="radio" name="simplenivoslider_apply" value="false" <?php if ($simplenivoslider_apply[0] <> 'true') echo 'checked'; ?>><?php _e('None'); ?>
+						<?php
+						if (!empty($simplenivoslider_apply)) {
+						?>
+							<input type="radio" name="simplenivoslider_apply" value="true" <?php if ($simplenivoslider_apply[0] === 'true') { echo 'checked'; }?>><?php _e('Apply'); ?>&nbsp;&nbsp;
+							<input type="radio" name="simplenivoslider_apply" value="false" <?php if ($simplenivoslider_apply[0] <> 'true') { echo 'checked'; }?>><?php _e('None');
+						} else {
+						?>
+							<input type="radio" name="simplenivoslider_apply" value="true"><?php _e('Apply'); ?>&nbsp;&nbsp;
+							<input type="radio" name="simplenivoslider_apply" value="false" checked><?php _e('None');
+						}
+						?>
 					</div>
 				</td>
 			</tr>
@@ -547,8 +556,12 @@ class SimpleNivoSliderAdmin {
 	function posts_custom_columns_simplenivoslider($column_name, $post_id){
 		if($column_name === 'column_simplenivoslider_apply'){
 			$simplenivoslider_apply = get_post_meta( $post_id, 'simplenivoslider_apply' );
-			if ($simplenivoslider_apply[0]){
-				_e('Apply');
+			if (!empty($simplenivoslider_apply)) {
+				if ($simplenivoslider_apply[0]){
+					_e('Apply');
+				} else {
+					_e('None');
+				}
 			} else {
 				_e('None');
 			}
@@ -571,8 +584,12 @@ class SimpleNivoSliderAdmin {
 	function pages_custom_columns_simplenivoslider($column_name, $post_id){
 		if($column_name === 'column_simplenivoslider_apply'){
 			$simplenivoslider_apply = get_post_meta( $post_id, 'simplenivoslider_apply' );
-			if ($simplenivoslider_apply[0]){
-				_e('Apply');
+			if (!empty($simplenivoslider_apply)) {
+				if ($simplenivoslider_apply[0]){
+					_e('Apply');
+				} else {
+					_e('None');
+				}
 			} else {
 				_e('None');
 			}
