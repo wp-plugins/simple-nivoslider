@@ -497,7 +497,13 @@ class SimpleNivoSliderAdmin {
 	 */
 	function apply_simplenivoslider_custom_box() {
 
-		$simplenivoslider_apply = get_post_meta( $_GET['post'], 'simplenivoslider_apply' );
+		if ( isset($_GET['post']) ) {
+			$get_post = $_GET['post'];
+		} else {
+			$get_post = NULL;
+		}
+
+		$simplenivoslider_apply = get_post_meta( $get_post, 'simplenivoslider_apply' );
 
 		?>
 		<table>
