@@ -4,7 +4,7 @@ Donate link: http://gallerylink.nyanko.org/medialink/simple-nivoslider/
 Tags: slider, nivoslider, jquery, gallery, image, images, photo, photos, picture, pictures
 Requires at least: 3.0.1
 Tested up to: 3.4
-Stable tag: 1.8
+Stable tag: 2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,6 +40,10 @@ none
 
 == Changelog ==
 
+= 2.0 =
+Change management screen to responsive tab menu design.
+Fixed problem of when the gallery and links to media files usually are mixed within a page.
+
 = 1.8 =
 Fixed of problem of error in debug mode.
 
@@ -56,8 +60,8 @@ Fixed of problem of error in debug mode.
 Fixed a problem of Gallery.
 
 = 1.3 =
-Can be cooperation with GalleryLink.
-Can be cooperation with MediaLink.
+Work with GalleryLink.
+work with MediaLink.
 
 = 1.2 =
 Change management screen.
@@ -71,6 +75,7 @@ Fixed uninstall.
 
 == Upgrade Notice ==
 
+= 2.0 =
 = 1.8 =
 = 1.7 =
 = 1.6 =

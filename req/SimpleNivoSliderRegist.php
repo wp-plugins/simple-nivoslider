@@ -36,23 +36,23 @@ class SimpleNivoSliderRegist {
 
 		if ( !get_option('simplenivoslider_settings') ) {
 			$settings_tbl = array(
-								theme => 'default',
-								effect => 'random',
-								slices => 15,
-								boxCols => 8,
-								boxRows => 4,
-								animSpeed => 500,
-								pauseTime => 3000,
-								startSlide => 0,
-								directionNav => 'true',
-								controlNav => 'true',
-								controlNavThumbs => 'false',
-								thumbswidth => 40,
-								pauseOnHover => 'true',
-								manualAdvance => 'false',
-								prevText => 'Prev',
-								nextText => 'Next',
-								randomStart => 'false'
+								'theme' => 'default',
+								'effect' => 'random',
+								'slices' => 15,
+								'boxCols' => 8,
+								'boxRows' => 4,
+								'animSpeed' => 500,
+								'pauseTime' => 3000,
+								'startSlide' => 0,
+								'directionNav' => 'true',
+								'controlNav' => 'true',
+								'controlNavThumbs' => 'false',
+								'thumbswidth' => 40,
+								'pauseOnHover' => 'true',
+								'manualAdvance' => 'false',
+								'prevText' => 'Prev',
+								'nextText' => 'Next',
+								'randomStart' => 'false'
 							);
 			update_option( 'simplenivoslider_settings', $settings_tbl );
 		}

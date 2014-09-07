@@ -2,7 +2,7 @@
 /*
 Plugin Name: Simple NivoSlider
 Plugin URI: http://wordpress.org/plugins/simple-nivoslider/
-Version: 1.8
+Version: 2.0
 Description: Integrates NivoSlider into WordPress.
 Author: Katsushi Kawamori
 Author URI: http://gallerylink.nyanko.org/medialink/simple-nivoslider/
@@ -28,16 +28,17 @@ Domain Path: /languages
 
 	define("SIMPLENIVOSLIDER_PLUGIN_BASE_FILE", plugin_basename(__FILE__));
 	define("SIMPLENIVOSLIDER_PLUGIN_BASE_DIR", dirname(__FILE__));
-	define("SIMPLENIVOSLIDER_PLUGIN_URL", plugins_url($path='',$scheme=null));
+	define("SIMPLENIVOSLIDER_PLUGIN_URL", plugins_url($path='',$scheme=null).'/simple-nivoslider');
 
-	require_once( dirname( __FILE__ ) . '/req/SimpleNivoSliderRegist.php' );
+	require_once( SIMPLENIVOSLIDER_PLUGIN_BASE_DIR . '/req/SimpleNivoSliderRegist.php' );
 	$simplenivosliderregistandheader = new SimpleNivoSliderRegist();
 	add_action('admin_init', array($simplenivosliderregistandheader, 'register_settings'));
 	unset($simplenivosliderregistandheader);
 
-	require_once( dirname( __FILE__ ) . '/req/SimpleNivoSliderAdmin.php' );
+	require_once( SIMPLENIVOSLIDER_PLUGIN_BASE_DIR . '/req/SimpleNivoSliderAdmin.php' );
 	$simplenivoslideradmin = new SimpleNivoSliderAdmin();
 	add_action( 'admin_menu', array($simplenivoslideradmin, 'plugin_menu'));
+	add_action( 'admin_enqueue_scripts', array($simplenivoslideradmin, 'load_custom_wp_admin_style') );
 	add_action( 'admin_menu', array($simplenivoslideradmin, 'add_apply_simplenivoslider_custom_box'));
 	add_action( 'save_post', array($simplenivoslideradmin, 'save_apply_simplenivoslider_postdata'));
 	add_filter( 'plugin_action_links', array($simplenivoslideradmin, 'settings_link'), 10, 2 );
@@ -45,12 +46,17 @@ Domain Path: /languages
 	add_action('manage_posts_custom_column', array($simplenivoslideradmin, 'posts_custom_columns_simplenivoslider'), 10, 2);
 	add_filter('manage_pages_columns', array($simplenivoslideradmin, 'pages_columns_simplenivoslider'));
 	add_action('manage_pages_custom_column', array($simplenivoslideradmin, 'pages_custom_columns_simplenivoslider'), 10, 2);
+	add_action( 'admin_footer', array($simplenivoslideradmin, 'load_custom_wp_admin_style2') );
 	unset($simplenivoslideradmin);
 
 	include_once( SIMPLENIVOSLIDER_PLUGIN_BASE_DIR.'/inc/SimpleNivoSlider.php' );
 	$simplenivoslider = new SimpleNivoSlider();
-	$footerjs = '';
-	$simplenivoslider->footerjs = $footerjs;
+	$simplenivoslider_attachment_args = array(
+		'post_type' => 'attachment',
+		'post_mime_type' => 'image',
+		'numberposts' => -1
+		);
+	$simplenivoslider->attachments = get_posts($simplenivoslider_attachment_args);
 
 	add_filter( 'wp_get_attachment_image_attributes', array($simplenivoslider, 'add_title_to_attachment_image'), 12, 2 );
 	add_filter( 'the_content', array($simplenivoslider, 'add_img_tag'), 13 );
@@ -63,7 +69,7 @@ Domain Path: /languages
 	// for MediaLink http://wordpress.org/plugins/medialink/
 	add_filter( 'post_medialink', array($simplenivoslider, 'add_img_tag'), 16 );
 
-	add_action( 'wp_footer', array($simplenivoslider, 'add_footer'), 17 );
+	add_action( 'wp_footer', array($simplenivoslider, 'add_js_css'), 17 );
 
 	unset($simplenivoslider);
 
