@@ -21,6 +21,7 @@
 
 class SimpleNivoSlider {
 
+	public $footer_js;
 	public $attachments;
 
 	/* ==================================================
@@ -63,6 +64,9 @@ class SimpleNivoSlider {
 				$link = strip_tags( $link, '<img>');
 				$settings_tbl = get_option('simplenivoslider_settings');
 				$link = '<div class="slider-wrapper theme-'.$settings_tbl['theme'].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$link.'</div></div>';
+
+				$this->footer_js .= $this->add_js();
+
 			}
 		}
 
@@ -88,7 +92,9 @@ class SimpleNivoSlider {
 	* @param	none
 	* @since	1.0
 	*/
-	function add_js_css(){
+	function add_footer(){
+
+		echo $this->footer_js;
 
 		$settings_tbl = get_option('simplenivoslider_settings');
 		$theme = $settings_tbl['theme'];
@@ -98,6 +104,34 @@ class SimpleNivoSlider {
 		wp_enqueue_style( 'nivo-slider',  SIMPLENIVOSLIDER_PLUGIN_URL.'/nivo-slider/nivo-slider.css' );
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'nivo-slider', SIMPLENIVOSLIDER_PLUGIN_URL.'/nivo-slider/jquery.nivo.slider.pack.js', null, '3.2');
+
+	// CSS
+$simplenivoslider_add_css = <<<SIMPLENIVOSLIDERADDCSS
+<!-- Start Simple NivoSlider CSS -->
+<style type="text/css">
+.theme-{$theme} .nivo-controlNav.nivo-thumbs-enabled img {
+	display: block;
+	width: {$thumbswidth}px;
+	height: auto;
+}
+</style>
+<!-- End Simple NivoSlider CSS -->
+
+SIMPLENIVOSLIDERADDCSS;
+
+		echo $simplenivoslider_add_css;
+
+	}
+
+	/* ==================================================
+	* @param	none
+	* @since	1.0
+	*/
+	function add_js(){
+
+		$settings_tbl = get_option('simplenivoslider_settings');
+		$theme = $settings_tbl['theme'];
+		$thumbswidth = $settings_tbl['thumbswidth'];
 
 // JS
 $simplenivoslider_add_js = <<<SIMPLENIVOSLIDER1
@@ -131,23 +165,7 @@ $simplenivoslider_add_js .= <<<SIMPLENIVOSLIDER2
 
 SIMPLENIVOSLIDER2;
 
-		echo $simplenivoslider_add_js;
-
-	// CSS
-$simplenivoslider_add_css = <<<SIMPLENIVOSLIDERADDCSS
-<!-- Start Simple NivoSlider CSS -->
-<style type="text/css">
-.theme-{$theme} .nivo-controlNav.nivo-thumbs-enabled img {
-	display: block;
-	width: {$thumbswidth}px;
-	height: auto;
-}
-</style>
-<!-- End Simple NivoSlider CSS -->
-
-SIMPLENIVOSLIDERADDCSS;
-
-		echo $simplenivoslider_add_css;
+		return $simplenivoslider_add_js;
 
 	}
 
