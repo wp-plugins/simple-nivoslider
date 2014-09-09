@@ -21,7 +21,7 @@
 
 class SimpleNivoSlider {
 
-	public $footer_js;
+	public $footer_js_s;
 	public $attachments;
 
 	/* ==================================================
@@ -65,7 +65,7 @@ class SimpleNivoSlider {
 				$settings_tbl = get_option('simplenivoslider_settings');
 				$link = '<div class="slider-wrapper theme-'.$settings_tbl['theme'].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$link.'</div></div>';
 
-				$this->footer_js .= $this->add_js();
+				$this->footer_js_s[get_the_ID()] = $this->add_js();
 
 			}
 		}
@@ -94,7 +94,9 @@ class SimpleNivoSlider {
 	*/
 	function add_footer(){
 
-		echo $this->footer_js;
+		foreach ( $this->footer_js_s as $footer_js ){
+			echo $footer_js;
+		}
 
 		$settings_tbl = get_option('simplenivoslider_settings');
 		$theme = $settings_tbl['theme'];
@@ -107,6 +109,7 @@ class SimpleNivoSlider {
 
 	// CSS
 $simplenivoslider_add_css = <<<SIMPLENIVOSLIDERADDCSS
+
 <!-- Start Simple NivoSlider CSS -->
 <style type="text/css">
 .theme-{$theme} .nivo-controlNav.nivo-thumbs-enabled img {
@@ -169,6 +172,22 @@ SIMPLENIVOSLIDER2;
 
 	}
 
+	/* ==================================================
+	* @param	none
+	* @since	2.2
+	*/
+	function add_gallery() {
+
+		$simplenivoslider_apply = get_post_meta( get_the_ID(), 'simplenivoslider_apply' );
+		if ( !empty($simplenivoslider_apply) ){
+			if ($simplenivoslider_apply[0] === 'true'){
+				remove_shortcode('gallery', 'gallery_shortcode');
+				add_shortcode('gallery', array($this, 'simplenivoslider_gallery_shortcode'));
+			}
+		}
+
+	}
+
 	/**
 	 * The Gallery shortcode.
 	 *
@@ -201,8 +220,6 @@ SIMPLENIVOSLIDER2;
 	 * @return string HTML content to display gallery.
 	 */
 	function simplenivoslider_gallery_shortcode( $attr ) {
-
-		$simplenivoslider_apply = get_post_meta( get_the_ID(), 'simplenivoslider_apply' );
 
 		$post = get_post();
 
@@ -242,37 +259,19 @@ SIMPLENIVOSLIDER2;
 
 		$html5 = current_theme_supports( 'html5', 'gallery' );
 
-		if ( !empty($simplenivoslider_apply) ){
-			if ($simplenivoslider_apply[0] === 'true'){
-				extract(shortcode_atts(array(
-					'order'      => 'ASC',
-					'orderby'    => 'menu_order ID',
-					'id'         => $post ? $post->ID : 0,
-					'itemtag'    => $html5 ? 'figure'     : 'dl',
-					'icontag'    => $html5 ? 'div'        : 'dt',
-					'captiontag' => $html5 ? 'figcaption' : 'dd',
-					'columns'    => 3,
-					'size'       => 'full',
-					'include'    => '',
-					'exclude'    => '',
-					'link'       => 'none'
-				), $attr, 'gallery'));
-			}
-		} else {
-			extract(shortcode_atts(array(
-				'order'      => 'ASC',
-				'orderby'    => 'menu_order ID',
-				'id'         => $post ? $post->ID : 0,
-				'itemtag'    => $html5 ? 'figure'     : 'dl',
-				'icontag'    => $html5 ? 'div'        : 'dt',
-				'captiontag' => $html5 ? 'figcaption' : 'dd',
-				'columns'    => 3,
-				'size'       => 'thumbnail',
-				'include'    => '',
-				'exclude'    => '',
-				'link'       => ''
-			), $attr, 'gallery'));
-		}
+		extract(shortcode_atts(array(
+			'order'      => 'ASC',
+			'orderby'    => 'menu_order ID',
+			'id'         => $post ? $post->ID : 0,
+			'itemtag'    => $html5 ? 'figure'     : 'dl',
+			'icontag'    => $html5 ? 'div'        : 'dt',
+			'captiontag' => $html5 ? 'figcaption' : 'dd',
+			'columns'    => 3,
+			'size'       => 'full',
+			'include'    => '',
+			'exclude'    => '',
+			'link'       => 'none'
+		), $attr, 'gallery'));
 
 		$id = intval($id);
 		if ( 'RAND' == $order )
@@ -301,72 +300,6 @@ SIMPLENIVOSLIDER2;
 			return $output;
 		}
 
-		$itemtag = tag_escape($itemtag);
-		$captiontag = tag_escape($captiontag);
-		$icontag = tag_escape($icontag);
-		$valid_tags = wp_kses_allowed_html( 'post' );
-		if ( ! isset( $valid_tags[ $itemtag ] ) )
-			$itemtag = 'dl';
-		if ( ! isset( $valid_tags[ $captiontag ] ) )
-			$captiontag = 'dd';
-		if ( ! isset( $valid_tags[ $icontag ] ) )
-			$icontag = 'dt';
-
-		$columns = intval($columns);
-		$itemwidth = $columns > 0 ? floor(100/$columns) : 100;
-		$float = is_rtl() ? 'right' : 'left';
-
-		$selector = "gallery-{$instance}";
-
-		$gallery_style = $gallery_div = '';
-
-		/**
-		 * Filter whether to print default gallery styles.
-		 *
-		 * @since 3.1.0
-		 *
-		 * @param bool $print Whether to print default gallery styles.
-		 *                    Defaults to false if the theme supports HTML5 galleries.
-		 *                    Otherwise, defaults to true.
-		 */
-		if ( !empty($simplenivoslider_apply) ){
-			if ($simplenivoslider_apply[0] <> 'true'){
-				if ( apply_filters( 'use_default_gallery_style', ! $html5 ) ) {
-					$gallery_style = "
-					<style type='text/css'>
-						#{$selector} {
-							margin: auto;
-						}
-						#{$selector} .gallery-item {
-							float: {$float};
-							margin-top: 10px;
-							text-align: center;
-							width: {$itemwidth}%;
-						}
-						#{$selector} img {
-							border: 2px solid #cfcfcf;
-						}
-						#{$selector} .gallery-caption {
-							margin-left: 0;
-						}
-						/* see gallery_shortcode() in wp-includes/media.php */
-					</style>\n\t\t";
-				}
-				$size_class = sanitize_html_class( $size );
-				$gallery_div = "<div id='$selector' class='gallery galleryid-{$id} gallery-columns-{$columns} gallery-size-{$size_class}'>";
-			}
-		}
-
-		/**
-		 * Filter the default gallery shortcode CSS styles.
-		 *
-		 * @since 2.5.0
-		 *
-		 * @param string $gallery_style Default gallery shortcode CSS styles.
-		 * @param string $gallery_div   Opening HTML div container for the gallery shortcode output.
-		 */
-		$output = apply_filters( 'gallery_style', $gallery_style . $gallery_div );
-
 		$i = 0;
 		foreach ( $attachments as $id => $attachment ) {
 			if ( ! empty( $link ) && 'file' === $link )
@@ -382,53 +315,22 @@ SIMPLENIVOSLIDER2;
 			if ( isset( $image_meta['height'], $image_meta['width'] ) )
 				$orientation = ( $image_meta['height'] > $image_meta['width'] ) ? 'portrait' : 'landscape';
 
-			if ( !empty($simplenivoslider_apply) ){
-				if ($simplenivoslider_apply[0] === 'true'){
-					$settings_tbl = get_option('simplenivoslider_settings');
-					if ($settings_tbl['controlNavThumbs'] === 'true'){
-						$image_thumb = wp_get_attachment_image_src( $id, 'thumbnail', false );
-						if(preg_match_all("/<img(.+?)>/i", $image_output, $result) !== false){
-					    	foreach ($result[1] as $value){
-								if( !strpos($value, 'data-thumb=') ) {
-									$thumb_data = ' data-thumb="'.$image_thumb[0].'" ';
-									$image_output = str_replace($value, $thumb_data.$value, $image_output);
-								}
-							}
+			$settings_tbl = get_option('simplenivoslider_settings');
+			if ($settings_tbl['controlNavThumbs'] === 'true'){
+				$image_thumb = wp_get_attachment_image_src( $id, 'thumbnail', false );
+				if(preg_match_all("/<img(.+?)>/i", $image_output, $result) !== false){
+			    	foreach ($result[1] as $value){
+						if( !strpos($value, 'data-thumb=') ) {
+							$thumb_data = ' data-thumb="'.$image_thumb[0].'" ';
+							$image_output = str_replace($value, $thumb_data.$value, $image_output);
 						}
 					}
-					$output .= $image_output;
-				}
-			} else {
-				$output .= "<{$itemtag} class='gallery-item'>";
-				$output .= "
-					<{$icontag} class='gallery-icon {$orientation}'>
-						$image_output
-					</{$icontag}>";
-				if ( $captiontag && trim($attachment->post_excerpt) ) {
-					$output .= "
-						<{$captiontag} class='wp-caption-text gallery-caption'>
-						" . wptexturize($attachment->post_excerpt) . "
-						</{$captiontag}>";
-				}
-				$output .= "</{$itemtag}>";
-				if ( ! $html5 && $columns > 0 && ++$i % $columns == 0 ) {
-					$output .= '<br style="clear: both" />';
 				}
 			}
+			$output .= $image_output;
 		}
 
-		if ( !empty($simplenivoslider_apply) ){
-			if ($simplenivoslider_apply[0] === 'true'){
-				$output = '<div class="slider-wrapper theme-'.$settings_tbl['theme'].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$output.'</div></div>';
-			}
-		} else {
-			if ( ! $html5 && $columns > 0 && $i % $columns !== 0 ) {
-				$output .= "
-					<br style='clear: both' />";
-			}
-			$output .= "
-				</div>\n";
-		}
+		$output = '<div class="slider-wrapper theme-'.$settings_tbl['theme'].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$output.'</div></div>';
 
 		return $output;
 
