@@ -4,7 +4,7 @@ Donate link: http://gallerylink.nyanko.org/medialink/simple-nivoslider/
 Tags: slider, nivoslider, jquery, gallery, image, images, photo, photos, picture, pictures
 Requires at least: 3.0.1
 Tested up to: 3.4
-Stable tag: 2.2
+Stable tag: 2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,8 +13,13 @@ Integrates NivoSlider into WordPress.
 == Description ==
 
 * Integrates NivoSlider into WordPress.
-* Can be cooperation with [GalleryLink](http://wordpress.org/plugins/gallerylink/).
-* Can be cooperation with [MediaLink](http://wordpress.org/plugins/medialink/).
+* Add effect to images inserted into WordPress posts, custom posts and pages.
+* Add effect to the WordPress gallery.
+* Add effect to the WordPress home, category and archive pages.
+* Can set the apply in each page or post or custom post.
+
+* Work with [GalleryLink](http://wordpress.org/plugins/gallerylink/).
+* Work with [MediaLink](http://wordpress.org/plugins/medialink/).
 
 *   Japanese (ja) - [Katsushi Kawamori](http://gallerylink.nyanko.org/medialink/simple-nivoslider/)
 
@@ -39,6 +44,9 @@ none
 8. Settings of Nivo Slider
 
 == Changelog ==
+
+= 2.3 =
+Fixed problem of when the gallery and links to media files usually are mixed within a page.
 
 = 2.2 =
 Fixed the problem of conflict between plugins.
@@ -81,6 +89,7 @@ Fixed uninstall.
 
 == Upgrade Notice ==
 
+= 2.3 =
 = 2.2 =
 = 2.1 =
 = 2.0 =

@@ -38,6 +38,9 @@ class SimpleNivoSlider {
 			if ($simplenivoslider_apply[0] === 'true'){
 
 				if(preg_match_all("/<img(.+?)>/i", $link, $result) !== false){
+
+					$link=implode( "\n", $result[0] );
+
 			    	foreach ($result[1] as $value){
 						preg_match('/src=\"(.[^\"]*)\"/',$value,$src);
 						$explode = explode("/" , $src[1]);
@@ -61,7 +64,6 @@ class SimpleNivoSlider {
 						}
 					}
 				}
-				$link = strip_tags( $link, '<img>');
 				$settings_tbl = get_option('simplenivoslider_settings');
 				$link = '<div class="slider-wrapper theme-'.$settings_tbl['theme'].'"><div id="simplenivoslider'.get_the_ID().'" class="nivoSlider">'.$link.'</div></div>';
 
@@ -182,7 +184,8 @@ SIMPLENIVOSLIDER2;
 		if ( !empty($simplenivoslider_apply) ){
 			if ($simplenivoslider_apply[0] === 'true'){
 				remove_shortcode('gallery', 'gallery_shortcode');
-				add_shortcode('gallery', array($this, 'simplenivoslider_gallery_shortcode'));
+				add_shortcode('gallery', array(&$this, 'simplenivoslider_gallery_shortcode'));
+				$this->footer_js_s[get_the_ID()] = $this->add_js();
 			}
 		}
 
@@ -247,6 +250,7 @@ SIMPLENIVOSLIDER2;
 		 * @param array  $attr   Attributes of the gallery shortcode.
 		 */
 		$output = apply_filters( 'post_gallery', '', $attr );
+
 		if ( $output != '' )
 			return $output;
 
