@@ -650,7 +650,7 @@ class SimpleNivoSliderAdmin {
 		if($column_name === 'column_simplenivoslider_apply'){
 			$simplenivoslider_apply = get_post_meta( $post_id, 'simplenivoslider_apply' );
 			if (!empty($simplenivoslider_apply)) {
-				if ($simplenivoslider_apply[0]){
+				if ($simplenivoslider_apply[0] === 'true'){
 					_e('Apply');
 				} else {
 					_e('None');
@@ -678,7 +678,7 @@ class SimpleNivoSliderAdmin {
 		if($column_name === 'column_simplenivoslider_apply'){
 			$simplenivoslider_apply = get_post_meta( $post_id, 'simplenivoslider_apply' );
 			if (!empty($simplenivoslider_apply)) {
-				if ($simplenivoslider_apply[0]){
+				if ($simplenivoslider_apply[0] === 'true'){
 					_e('Apply');
 				} else {
 					_e('None');
