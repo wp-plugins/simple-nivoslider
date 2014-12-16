@@ -3,8 +3,8 @@ Contributors: Katsushi Kawamori
 Donate link: http://gallerylink.nyanko.org/medialink/simple-nivoslider/
 Tags: slider, nivoslider, jquery, gallery, image, images, photo, photos, picture, pictures
 Requires at least: 3.0.1
-Tested up to: 3.4
-Stable tag: 3.0
+Tested up to: 4.0.1
+Stable tag: 3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -45,8 +45,14 @@ none
 
 == Changelog ==
 
+= 3.1 =
+Fixed a problem of Java Script for admin screen.
+
 = 3.0 =
 Fixed problem of when the gallery and links to media files usually are mixed within a page.
+
+= 2.3 =
+Fixed the problem of conflict between plugins.
 
 = 2.2 =
 Fixed the problem of conflict between plugins.
@@ -89,7 +95,9 @@ Fixed uninstall.
 
 == Upgrade Notice ==
 
+= 3.1 =
 = 3.0 =
+= 2.3 =
 = 2.2 =
 = 2.1 =
 = 2.0 =

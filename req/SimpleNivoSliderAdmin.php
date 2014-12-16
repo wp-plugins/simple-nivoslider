@@ -700,11 +700,9 @@ $simplenivoslider_add_jscss = <<<SIMPLENIVOSLIDER
 
 <!-- BEGIN: Simple Nivo Slider -->
 <script type="text/javascript">
-	jQuery(document).ready(function () {
-		jQuery('#simplenivoslider-admin-tabs').responsiveTabs({
-			startCollapsed: 'accordion'
-		});
-	});
+jQuery('#simplenivoslider-admin-tabs').responsiveTabs({
+  startCollapsed: 'accordion'
+});
 </script>
 <script type="text/javascript">
 	jQuery(function(){
