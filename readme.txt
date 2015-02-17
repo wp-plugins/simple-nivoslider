@@ -1,10 +1,10 @@
 === Simple NivoSlider ===
 Contributors: Katsushi Kawamori
-Donate link: http://gallerylink.nyanko.org/medialink/simple-nivoslider/
+Donate link: http://pledgie.com/campaigns/28307
 Tags: slider, nivoslider, jquery, gallery, image, images, photo, photos, picture, pictures
 Requires at least: 3.0.1
-Tested up to: 4.0.1
-Stable tag: 3.1
+Tested up to: 4.1
+Stable tag: 3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,7 +21,7 @@ Integrates NivoSlider into WordPress.
 * Works with [GalleryLink](http://wordpress.org/plugins/gallerylink/).
 * Works with [MediaLink](http://wordpress.org/plugins/medialink/).
 
-*   Japanese (ja) - [Katsushi Kawamori](http://gallerylink.nyanko.org/medialink/simple-nivoslider/)
+*   Japanese (ja) - [Katsushi Kawamori](http://riverforest-wp.info/)
 
 == Installation ==
 
@@ -44,6 +44,12 @@ none
 8. Settings of Nivo Slider
 
 == Changelog ==
+
+= 3.2 =
+Add screen of donate.
+Change the display of the message.
+Change readme.txt.
+Change /languages.
 
 = 3.1 =
 Fixed a problem of Java Script for admin screen.
@@ -95,6 +101,7 @@ Fixed uninstall.
 
 == Upgrade Notice ==
 
+= 3.2 =
 = 3.1 =
 = 3.0 =
 = 2.3 =
